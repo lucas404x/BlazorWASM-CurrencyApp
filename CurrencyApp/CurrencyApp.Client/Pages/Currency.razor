@@ -1,0 +1,63 @@
+﻿@page "/"
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@inject ICurrencyService CurrencyService
+
+@using System.ComponentModel.DataAnnotations
+@using CurrencyApp.Client.Services
+
+<PageTitle>Currency</PageTitle>
+
+<header>
+    <h1>Currency Converter</h1>
+    <p>Real-time FX rates at all times</p>
+</header>
+
+<main>
+    <InputSelect @bind-Value="Model!.SelectedFrom">
+        @foreach (var country in Countries)
+        {
+            <option value="@country">@country</option>
+        }
+    </InputSelect>
+
+    <InputSelect @bind-Value="Model!.SelectedTo">
+        @foreach (var country in Countries)
+        {
+            <option value="@country">@country</option>
+        }
+    </InputSelect>
+
+    <label
+        Amount
+        <InputNumber @bind-Value="Model!.Amount" DisplayName="Amount" TValue="decimal"></InputNumber>
+    </label>
+</main>
+
+@code {
+    private CurrencyInput? Model { get; set; }
+
+    private List<string> Countries { get; set; } = new();
+
+    protected async override Task OnInitializedAsync()
+    {
+        Model = new();
+        Countries = ["Brazil", "USA", "United Kingdom", "Japan", "New Zeland"];
+
+        var tst = await CurrencyService.GetCountriesAsync();
+        var ts2 = await CurrencyService.GetCurrenciesAsync(tst[0].Code, tst[1].Code);
+
+        await base.OnInitializedAsync();
+    }
+
+    private class CurrencyInput
+    {
+        [Required]
+        public string SelectedFrom { get; set; } = string.Empty;
+
+        [Required]
+        public string SelectedTo { get; set; } = string.Empty;
+
+        [Required]
+        public decimal Amount { get; set; }
+    }
+}
