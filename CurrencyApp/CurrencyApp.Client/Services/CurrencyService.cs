@@ -22,8 +22,6 @@ public class CurrencyService(HttpClient httpClient) : ICurrencyService
         ValidateCode(baseCountryCode);
         ValidateCode(currencyCountryCode);
 
-        // string endpoint = Uri.EscapeDataString($"{firstCode},{secondCode}");
-        // https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_qzSsQpiEvaTfWW5askpzBgRlebc3OxQGgZn6E7a4&currencies=USD&base_currency=BRL
         string response = await httpClient.GetStringAsync($"latest?base_currency={baseCountryCode}&currencies={currencyCountryCode}");
         List<decimal> currencyResponse = FreeCurrencyApiHelper.GetActualCurrencyResult<decimal>(response);
         
