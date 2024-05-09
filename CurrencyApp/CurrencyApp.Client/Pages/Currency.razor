@@ -1,63 +1,25 @@
 ﻿@page "/"
 @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
-@inject ICurrencyService CurrencyService
 
-@using System.ComponentModel.DataAnnotations
-@using CurrencyApp.Client.Services
+<PageTitle>Exchange Rate</PageTitle>
 
-<PageTitle>Currency</PageTitle>
+<InputNumber DisplayName="Amount" @bind-Value="Model.Amount"></InputNumber>
 
-<header>
-    <h1>Currency Converter</h1>
-    <p>Real-time FX rates at all times</p>
-</header>
-
-<main>
-    <InputSelect @bind-Value="Model!.SelectedFrom">
-        @foreach (var country in Countries)
-        {
-            <option value="@country">@country</option>
-        }
-    </InputSelect>
-
-    <InputSelect @bind-Value="Model!.SelectedTo">
-        @foreach (var country in Countries)
-        {
-            <option value="@country">@country</option>
-        }
-    </InputSelect>
-
-    <label
-        Amount
-        <InputNumber @bind-Value="Model!.Amount" DisplayName="Amount" TValue="decimal"></InputNumber>
-    </label>
-</main>
-
-@code {
-    private CurrencyInput? Model { get; set; }
-
-    private List<string> Countries { get; set; } = new();
-
-    protected async override Task OnInitializedAsync()
+<InputSelect @bind-Value="Model.SelectedCountryFromCode" @bind-Value:after="RefreshExchangeRate">
+    @foreach (var country in Model.Countries)
     {
-        Model = new();
-        Countries = ["Brazil", "USA", "United Kingdom", "Japan", "New Zeland"];
-
-        var tst = await CurrencyService.GetCountriesAsync();
-        var ts2 = await CurrencyService.GetCurrenciesAsync(tst[0].Code, tst[1].Code);
-
-        await base.OnInitializedAsync();
+        <option value="@country.Code">@country.Code - @country.Name</option>
     }
+</InputSelect>
 
-    private class CurrencyInput
+<InputSelect @bind-Value="Model.SelectedCountryToCode" @bind-Value:after="RefreshExchangeRate">
+    @foreach (var country in Model.Countries)
     {
-        [Required]
-        public string SelectedFrom { get; set; } = string.Empty;
-
-        [Required]
-        public string SelectedTo { get; set; } = string.Empty;
-
-        [Required]
-        public decimal Amount { get; set; }
+        <option value="@country.Code">@country.Code - @country.Name</option>
     }
+</InputSelect>
+
+@if (Model.IsValid())
+{
+    <p>Converted Amount: @Model.Amount @Model.SelectedCountryFromCode = @Model.ConvertedAmount @Model.SelectedCountryToCode</p>
 }

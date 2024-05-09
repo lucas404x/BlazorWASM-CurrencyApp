@@ -6,8 +6,7 @@ namespace CurrencyApp.Client.Services;
 public interface ICurrencyService
 {
     Task<List<CountryDto>> GetCountriesAsync();
-
-    Task<(decimal, decimal)> GetCurrenciesAsync(string firstCode, string secondCode);
+    Task<decimal> GetExchangeRateAsync(string baseCountryCode, string relativeCountryCode);
 }
 
 public class CurrencyService(HttpClient httpClient) : ICurrencyService
@@ -18,19 +17,22 @@ public class CurrencyService(HttpClient httpClient) : ICurrencyService
         return FreeCurrencyApiHelper.GetActualCurrencyResult<CountryDto>(response);
     }
 
-    public async Task<(decimal, decimal)> GetCurrenciesAsync(string firstCode, string secondCode)
+    public async Task<decimal> GetExchangeRateAsync(string baseCountryCode, string currencyCountryCode)
     {
-        ValidateCode(firstCode);
-        ValidateCode(secondCode);
+        ValidateCode(baseCountryCode);
+        ValidateCode(currencyCountryCode);
 
-        string queryParams = Uri.EscapeDataString($"{firstCode},{secondCode}");
-        var response = await httpClient.GetStringAsync($"latest?={queryParams}");
-        var currencies = FreeCurrencyApiHelper.GetActualCurrencyResult<decimal>(response);
-        if (currencies.Count != 2)
+        // string endpoint = Uri.EscapeDataString($"{firstCode},{secondCode}");
+        // https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_qzSsQpiEvaTfWW5askpzBgRlebc3OxQGgZn6E7a4&currencies=USD&base_currency=BRL
+        string response = await httpClient.GetStringAsync($"latest?base_currency={baseCountryCode}&currencies={currencyCountryCode}");
+        List<decimal> currencyResponse = FreeCurrencyApiHelper.GetActualCurrencyResult<decimal>(response);
+        
+        decimal exchangeRate = currencyResponse.FirstOrDefault();
+        if (exchangeRate == default)
         {
-            throw new InvalidDataException("Broken response");
+            throw new InvalidDataException($"The exchange from {baseCountryCode} to {currencyCountryCode} was not found.");
         }
-        return (currencies[0], currencies[1]);
+        return Math.Round(exchangeRate, 2);
     }
 
     private static void ValidateCode(string code)

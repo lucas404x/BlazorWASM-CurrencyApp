@@ -37,5 +37,4 @@ public static class FreeCurrencyApiHelper
     }
 
     public static bool IsCurrencyExists(string currencyCode) => _currencyApiCodes.Contains(currencyCode);
-
 }
