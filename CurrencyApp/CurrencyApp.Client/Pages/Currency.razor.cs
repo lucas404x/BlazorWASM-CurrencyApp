@@ -24,9 +24,12 @@ public partial class Currency
             else if (Amount < 1 || ExchangeRate <= 0) return false;
             return true;
         }
+
+        public void Swap()
+            => (SelectedCountryToCode, SelectedCountryFromCode) = (SelectedCountryFromCode, SelectedCountryToCode);
     }
 
-    private bool _IsExchangeRateLoading = false;
+    private bool DisableControls = false;
 
     [Inject]
     private ICurrencyService CurrencyService { get; set; } = null!;
@@ -35,12 +38,15 @@ public partial class Currency
 
     protected async override Task OnInitializedAsync()
     {
+        DisableControls = true;
+        
         await SetInitialCountries();
         await RefreshExchangeRate();
+        
+        DisableControls = false;
+
         await base.OnInitializedAsync();
     }
-
-    protected override bool ShouldRender() => !_IsExchangeRateLoading;
 
     private async Task SetInitialCountries()
     {
@@ -52,9 +58,23 @@ public partial class Currency
     private async Task RefreshExchangeRate()
     {
         if (Model.SelectedCountryFromCode is null || Model.SelectedCountryToCode is null) return;
-        _IsExchangeRateLoading = true;
         Model.ExchangeRate = await CurrencyService.GetExchangeRateAsync(Model.SelectedCountryFromCode, Model.SelectedCountryToCode);
-        _IsExchangeRateLoading = false;
-        StateHasChanged();
+    }
+
+    private async Task OnSetNewCountry()
+    {
+        DisableControls = true;
+        await RefreshExchangeRate();
+        DisableControls = false;
+    }
+    
+    private async Task SwapCountries()
+    {
+        DisableControls = true;
+
+        Model.Swap();
+        await RefreshExchangeRate();
+
+        DisableControls = false;
     }
 }

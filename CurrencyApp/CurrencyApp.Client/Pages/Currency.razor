@@ -1,23 +1,36 @@
 ﻿@page "/"
 @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 
-<PageTitle>Exchange Rate</PageTitle>
+<PageTitle>Currency Converter</PageTitle>
+
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="12">
+        <label class="d-flex align-center justify-center mud-width-full py-8">Currency Converter</label>
+    </MudItem>
+
+    <MudItem xs="12">
+        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center">
+            <MudSelect Disabled="DisableControls" Class="d-flex align-center justify-center mud-width-full py-8" @bind-Value="Model.SelectedCountryFromCode" @bind-Value:after="OnSetNewCountry" Variant="Variant.Filled">
+                @foreach (var country in Model.Countries)
+                {
+                    <MudSelectItem T="string" Value="@country.Code"></MudSelectItem>
+                }
+            </MudSelect>
+
+            <MudFab Disabled="DisableControls" Class="d-flex align-center justify-center" Color="Color.Primary" StartIcon="@Icons.Material.Rounded.ChangeCircle" DisableElevation="true" OnClick="SwapCountries" />
+
+            <MudSelect Disabled="DisableControls" Class="d-flex align-center justify-center mud-width-full py-8" @bind-Value="Model.SelectedCountryToCode" @bind-Value:after="OnSetNewCountry" Variant="Variant.Filled">
+                @foreach (var country in Model.Countries)
+                {
+                    <MudSelectItem T="string" Value="@country.Code"></MudSelectItem>
+                }
+            </MudSelect>
+        </MudStack>
+    </MudItem>
+</MudGrid>
 
 <InputNumber DisplayName="Amount" @bind-Value="Model.Amount"></InputNumber>
 
-<InputSelect @bind-Value="Model.SelectedCountryFromCode" @bind-Value:after="RefreshExchangeRate">
-    @foreach (var country in Model.Countries)
-    {
-        <option value="@country.Code">@country.Code - @country.Name</option>
-    }
-</InputSelect>
-
-<InputSelect @bind-Value="Model.SelectedCountryToCode" @bind-Value:after="RefreshExchangeRate">
-    @foreach (var country in Model.Countries)
-    {
-        <option value="@country.Code">@country.Code - @country.Name</option>
-    }
-</InputSelect>
 
 @if (Model.IsValid())
 {
