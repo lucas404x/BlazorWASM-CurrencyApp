@@ -39,10 +39,8 @@ public partial class Currency
     protected async override Task OnInitializedAsync()
     {
         DisableControls = true;
-        
         await SetInitialCountries();
         await RefreshExchangeRate();
-        
         DisableControls = false;
 
         await base.OnInitializedAsync();
@@ -71,10 +69,8 @@ public partial class Currency
     private async Task SwapCountries()
     {
         DisableControls = true;
-
         Model.Swap();
         await RefreshExchangeRate();
-
         DisableControls = false;
     }
 }
