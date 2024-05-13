@@ -8,28 +8,24 @@
         <MudText Align="Align.Center" Typo="Typo.h3">Currency Converter</MudText>
     </MudItem>
 
-    <MudItem xs="12" md="5">
-        <MudSelect Disabled="DisableControls" @bind-Value="Model.SelectedCountryFromCode" @bind-Value:after="OnSetNewCountry" Variant="Variant.Filled">
-            @foreach (var country in Model.Countries)
-            {
-                <MudSelectItem T="string" Value="@country.Code"></MudSelectItem>
-            }
-        </MudSelect>
-    </MudItem>
-    
-    <MudHidden Breakpoint="Breakpoint.Xs">
-        <MudItem md="2">
-            <MudIconButton Disabled="DisableControls" Icon="@Icons.Material.Rounded.ChangeCircle" DisableElevation="true" OnClick="SwapCountries"></MudIconButton>
-        </MudItem>
-    </MudHidden>
+    <MudItem xs="12">
+        <div class="d-flex justify-center align-center flex-auto">
+            <MudSelect Disabled="DisableControls" @bind-Value="Model.SelectedCountryFromCode" @bind-Value:after="OnSetNewCountry" Variant="Variant.Filled">
+                @foreach (var country in Model.Countries)
+                {
+                    <MudSelectItem T="string" Value="@country.Code"></MudSelectItem>
+                }
+            </MudSelect>
 
-    <MudItem xs="12" md="5">
-        <MudSelect Disabled="DisableControls" @bind-Value="Model.SelectedCountryToCode" @bind-Value:after="OnSetNewCountry" Variant="Variant.Filled">
-            @foreach (var country in Model.Countries)
-            {
-                <MudSelectItem T="string" Value="@country.Code"></MudSelectItem>
-            }
-        </MudSelect>
+            <MudIconButton Disabled="DisableControls" Icon="@Icons.Material.Rounded.ChangeCircle" DisableElevation="true" OnClick="SwapCountries"></MudIconButton>
+
+            <MudSelect Disabled="DisableControls" @bind-Value="Model.SelectedCountryToCode" @bind-Value:after="OnSetNewCountry" Variant="Variant.Filled">
+                @foreach (var country in Model.Countries)
+                {
+                    <MudSelectItem T="string" Value="@country.Code"></MudSelectItem>
+                }
+            </MudSelect>
+        </div>
     </MudItem>
 
     <MudItem xs="12">
@@ -37,11 +33,11 @@
     </MudItem>
     
     <MudItem xs="12" sm="6">
-        <MudNumericField Disabled="DisableControls" Immediate="true" @bind-Value="Model.Amount" Label="From" Variant="Variant.Filled" HideSpinButtons="true" />
+        <MudNumericField Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Disabled="DisableControls" Immediate="true" @bind-Value="Model.Amount" Label="From" Variant="Variant.Filled" HideSpinButtons="true" />
     </MudItem>
 
     <MudItem xs="12" sm="6">
-        <MudTextField Value="Model.ConvertedAmount" ReadOnly="true" Label="To" Variant="Variant.Filled" HideSpinButtons="true" />
+        <MudNumericField Value="Model.ConvertedAmount" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Disabled="DisableControls" ReadOnly="true" Label="To" Variant="Variant.Filled" HideSpinButtons="true" />
     </MudItem>
 
 </MudGrid>
