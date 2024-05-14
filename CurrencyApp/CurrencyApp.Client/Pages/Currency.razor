@@ -17,7 +17,7 @@
                 }
             </MudSelect>
 
-            <MudIconButton Disabled="DisableControls" Icon="@Icons.Material.Rounded.ChangeCircle" DisableElevation="true" OnClick="SwapCountries"></MudIconButton>
+            <MudIconButton Class="mx-2" Disabled="DisableControls" Icon="@Icons.Material.Rounded.ChangeCircle" Color="Color.Primary" DisableElevation="true" OnClick="SwapCountries"></MudIconButton>
 
             <MudSelect Disabled="DisableControls" @bind-Value="Model.SelectedCountryToCode" @bind-Value:after="OnSetNewCountry" Variant="Variant.Filled">
                 @foreach (var country in Model.Countries)
@@ -33,11 +33,11 @@
     </MudItem>
     
     <MudItem xs="12" sm="6">
-        <MudNumericField Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Disabled="DisableControls" Immediate="true" @bind-Value="Model.Amount" Label="From" Variant="Variant.Filled" HideSpinButtons="true" />
+        <MudNumericField Format="N2" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Disabled="DisableControls" Immediate="true" @bind-Value="Model.Amount" Label="From" Variant="Variant.Filled" HideSpinButtons="true" />
     </MudItem>
 
     <MudItem xs="12" sm="6">
-        <MudNumericField Value="Model.ConvertedAmount" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Disabled="DisableControls" ReadOnly="true" Label="To" Variant="Variant.Filled" HideSpinButtons="true" />
+        <MudNumericField Format="N2" Value="Model.ConvertedAmount" AdornmentIcon="@Icons.Material.Filled.AttachMoney" Disabled="DisableControls" ReadOnly="true" Label="To" Variant="Variant.Filled" HideSpinButtons="true" />
     </MudItem>
 
 </MudGrid>
